@@ -129,7 +129,7 @@ Todas as árvores implementam:
 
 ## Referências
 
-- Steam Games Dataset (fronkongames), Kaggle — <https://www.kaggle.com/datasets/fronkongames/steam-games-dataset>
+- [Steam Games Dataset (fronkongames), Kaggle](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset)
 
 ## Licença
 
