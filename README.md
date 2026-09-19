@@ -18,8 +18,8 @@ Trabalho  de **Estrutura de Dados** (ECO – Engenharia de Computação), Prof. 
 Implementação e comparação de estruturas de dados em árvore em **Rust**, usando um dataset real de jogos da Steam:
 
 - Árvore binária de busca (BST)
-- Árvore balanceada 1: *(a definir: AVL / Rubro-Negra / outra)*
-- Árvore balanceada 2: *(a definir)*
+- Árvore balanceada 1: *AVL*
+- Árvore balanceada 2: *AA*
 
 **Integrantes:** *Miguel* e *Leonardo*
 
@@ -121,7 +121,7 @@ Todas as árvores implementam:
 - [x] Escolha do dataset
 - [x] Filtro que gera o CSV reduzido
 - [ ] Loader do CSV reduzido em Rust
-- [ ] BST
+- [x] BST
 - [ ] Árvore balanceada 1
 - [ ] Árvore balanceada 2
 - [ ] Métricas e gráficos
@@ -130,6 +130,7 @@ Todas as árvores implementam:
 ## Referências
 
 - [Steam Games Dataset (fronkongames), Kaggle](https://www.kaggle.com/datasets/fronkongames/steam-games-dataset)
+- [Implementando uma Binary Search Tree](https://www.tabnews.com.br/Programmer404/implementando-uma-binary-search-tree)
 
 ## Licença
 
