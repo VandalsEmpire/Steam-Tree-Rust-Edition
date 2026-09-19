@@ -1,10 +1,3 @@
-//! Filtra o CSV do "Steam Games Dataset" e gera um CSV enxuto.
-//!
-//! O cabeçalho original do dataset tem 39 nomes, mas as linhas de dados têm 40
-//! campos (a coluna "DiscountDLC count" são, na verdade, "Discount" e
-//! "DLC count" coladas). Por isso este programa IGNORA o cabeçalho original e
-//! lê os campos pela POSIÇÃO, escrevendo um cabeçalho novo e correto.
-//!
 //! Uso:
 //!     cargo run --release -- games.csv games_enxuto.csv
 
@@ -12,7 +5,6 @@ use csv::{ReaderBuilder, WriterBuilder};
 use std::env;
 use std::error::Error;
 
-/// (posição do campo no arquivo original, nome da coluna no arquivo novo)
 const COLUNAS: [(usize, &str); 9] = [
     (0, "AppID"),
     (1, "Name"),
@@ -30,10 +22,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let entrada = args.get(1).map(String::as_str).unwrap_or("games.csv");
     let saida = args.get(2).map(String::as_str).unwrap_or("games_enxuto.csv");
 
-    // has_headers(false): o cabeçalho original vem como um registro comum,
-    // que descartamos manualmente abaixo.
-    // flexible(true): não falha se alguma linha tiver quantidade de campos
-    // diferente das outras.
     let mut leitor = ReaderBuilder::new()
         .has_headers(false)
         .flexible(true)
@@ -41,7 +29,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut escritor = WriterBuilder::new().from_path(saida)?;
 
-    // Cabeçalho novo, com os nomes corretos.
+
     let novo_cabecalho: Vec<&str> = COLUNAS.iter().map(|(_, nome)| *nome).collect();
     escritor.write_record(&novo_cabecalho)?;
 
@@ -49,11 +37,11 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut escritas: u64 = 0;
     let mut descartadas: u64 = 0;
 
-    // skip(1) descarta o cabeçalho original (o desalinhado).
+
     for resultado in leitor.records().skip(1) {
         lidas += 1;
 
-        // Linha com erro de parsing: descarta e segue.
+
         let registro = match resultado {
             Ok(r) => r,
             Err(_) => {
@@ -62,7 +50,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         };
 
-        // O AppID precisa ser um número; senão a linha está corrompida.
+
         let app_id_valido = registro
             .get(COLUNAS[0].0)
             .map(|s| s.trim().parse::<u64>().is_ok())
@@ -72,7 +60,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             continue;
         }
 
-        // Campos ausentes viram string vazia.
+
         let linha: Vec<&str> = COLUNAS
             .iter()
             .map(|(pos, _)| registro.get(*pos).unwrap_or(""))
