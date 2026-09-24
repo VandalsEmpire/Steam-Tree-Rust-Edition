@@ -1,5 +1,6 @@
 ![Static Badge](https://img.shields.io/badge/Free-Palestine-4B0082)
 ![Static Badge](https://img.shields.io/badge/Anti--Imperialism-710C04)
+
 ```
   █████████  ███████████ ███████████   ██████████
  ███░░░░░███░█░░░███░░░█░░███░░░░░███ ░░███░░░░░█
@@ -136,6 +137,8 @@ Todas as árvores implementam:
 
 - **Código:** [GNU AGPL-3.0](LICENSE)
 - **Dataset:** Steam Games Dataset (fronkongames), licença MIT, usado em versão reduzida (`data/games_enxuto.csv`).
+
+![Static_Badge](https://redlib.catsarch.com/img/h4u0ezhy2ioh1.jpeg)
 
 
 
