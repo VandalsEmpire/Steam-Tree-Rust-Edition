@@ -22,7 +22,7 @@ Implementação e comparação de estruturas de dados em árvore em **Rust**, us
 - Árvore balanceada 1: *AVL*
 - Árvore balanceada 2: *AA*
 
-**Integrantes:** *Miguel* e *Leonardo*
+**Integrantes:** *Miguel*, *Livia* e *Leonardo*
 
 > **Status:** WIP
 
