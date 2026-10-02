@@ -1,6 +1,7 @@
 use std::time::Instant;
 use steam::arvore::Arvore;
 use steam::bst::Bst;
+use steam::aa::Aa;
 use steam::jogo::{carregar_csv, Jogo};
 
 fn medir_insercao(arvore: &mut dyn Arvore, jogos: &[&Jogo], rotulo: &str) {
@@ -38,14 +39,28 @@ fn main() {
     let mut bst = Bst::nova();
     medir_insercao(&mut bst, &todos, "ordem do arquivo");
 
+    let mut aa = Aa::nova();
+    medir_insercao(&mut aa, &todos, "ordem do arquivo");
+
     if let Some(primeiro) = jogos.first() {
         bst.zerar_contador();
         let achou = bst.buscar(primeiro.app_id).map(|j| j.name.clone());
         println!(
-            "busca por {}: {:?} ({} comparações)",
+            "(BST) busca por {}: {:?} ({} comparações)",
             primeiro.app_id,
             achou,
             bst.contador_comparacoes()
+        );
+    }
+
+    if let Some(primeiro) = jogos.first() {
+        aa.zerar_contador();
+        let achou = aa.buscar(primeiro.app_id).map(|j| j.name.clone());
+        println!(
+            "(AA) busca por {}: {:?} ({} comparações)",
+            primeiro.app_id,
+            achou,
+            aa.contador_comparacoes()
         );
     }
 
@@ -53,4 +68,7 @@ fn main() {
     ordenados.sort_by_key(|j| j.app_id);
     let mut bst_ord = Bst::nova();
     medir_insercao(&mut bst_ord, &ordenados, "chaves ordenadas (pior caso)");
+
+    let mut aa_ord = Aa::nova();
+    medir_insercao(&mut aa_ord, &ordenados, "chaves ordenadas (pior caso)");
 }
