@@ -121,10 +121,10 @@ Todas as árvores implementam:
 
 - [x] Escolha do dataset
 - [x] Filtro que gera o CSV reduzido
-- [ ] Loader do CSV reduzido em Rust
+- [x] Loader do CSV reduzido em Rust
 - [x] BST
-- [ ] Árvore balanceada 1
-- [ ] Árvore balanceada 2
+- [x] AA
+- [ ] AVL
 - [ ] Métricas e gráficos
 - [ ] Slides e apresentação
 
