@@ -48,7 +48,7 @@ impl Default for Aa {
 
 //rotaciona para a direita
 fn skew(mut no: Box<No>) -> Box<No> {
-    if let Some(esq_nivel) = no.esq.as_ref().map(|n|n.nivel){
+    if let Some(esq_nivel) = no.esq.as_ref().map(|n| n.nivel) {
         if esq_nivel == no.nivel {
             let mut nova_raiz = no.esq.take().unwrap();
             no.esq = nova_raiz.dir.take();
@@ -61,8 +61,12 @@ fn skew(mut no: Box<No>) -> Box<No> {
 
 //rotaciona para a esquerda e sobe o nível(quebra a linha em uma arvore)
 fn split(mut no: Box<No>) -> Box<No> {
-    let neto_direito_mesmo_nivel = no.dir.as_ref().and_then(|d| d.dir.as_ref())
-    .map(|neto| neto.nivel == no.nivel).unwrap_or(false);
+    let neto_direito_mesmo_nivel = no
+        .dir
+        .as_ref()
+        .and_then(|d| d.dir.as_ref())
+        .map(|neto| neto.nivel == no.nivel)
+        .unwrap_or(false);
 
     if neto_direito_mesmo_nivel {
         let mut nova_raiz = no.dir.take().unwrap();
@@ -103,7 +107,6 @@ fn reajustar_nivel(no: &mut No) {
     }
 }
 
-
 // Implementação do trait Arvore para a árvore AA
 
 impl Arvore for Aa {
@@ -112,34 +115,56 @@ impl Arvore for Aa {
     }
 
     fn inserir(&mut self, chave: u32, dados: Jogo) {
-        fn inserir_recursivo(no: Option<Box<No>>, chave: u32, dados: Jogo,
-             comparacoes: &mut u64, inserido: &mut bool,) -> Box<No> {
-                let mut no = match no {
-                    None => {
-                        *inserido = true;
-                        return Box::new(No::novo(chave, dados));
-                    }
-                    Some(n_) => n_,
-                };
-                *comparacoes += 1;
-                match chave.cmp(&no.chave) {
-                    Ordering::Less => {
-                        no.esq = Some(inserir_recursivo(no.esq.take(), chave, dados, comparacoes, inserido));
-                    }
-                    Ordering::Greater => {
-                        no.dir = Some(inserir_recursivo(no.dir.take(), chave, dados, comparacoes, inserido));
-                    }
-                    Ordering::Equal => {
-                        no.dados = dados; // Chave duplicada: apenas atualiza
-                        return no;
-                    }
+        fn inserir_recursivo(
+            no: Option<Box<No>>,
+            chave: u32,
+            dados: Jogo,
+            comparacoes: &mut u64,
+            inserido: &mut bool,
+        ) -> Box<No> {
+            let mut no = match no {
+                None => {
+                    *inserido = true;
+                    return Box::new(No::novo(chave, dados));
                 }
+                Some(n_) => n_,
+            };
+            *comparacoes += 1;
+            match chave.cmp(&no.chave) {
+                Ordering::Less => {
+                    no.esq = Some(inserir_recursivo(
+                        no.esq.take(),
+                        chave,
+                        dados,
+                        comparacoes,
+                        inserido,
+                    ));
+                }
+                Ordering::Greater => {
+                    no.dir = Some(inserir_recursivo(
+                        no.dir.take(),
+                        chave,
+                        dados,
+                        comparacoes,
+                        inserido,
+                    ));
+                }
+                Ordering::Equal => {
+                    no.dados = dados; // Chave duplicada: apenas atualiza
+                    return no;
+                }
+            }
             let no = skew(no);
             split(no)
         }
         let mut inserido = false;
-        self.raiz = Some(inserir_recursivo(self.raiz.take(), chave,
-    dados, &mut self.comparacoes, &mut inserido));
+        self.raiz = Some(inserir_recursivo(
+            self.raiz.take(),
+            chave,
+            dados,
+            &mut self.comparacoes,
+            &mut inserido,
+        ));
         if inserido {
             self.tamanho += 1;
         }
@@ -159,8 +184,12 @@ impl Arvore for Aa {
     }
 
     fn remover(&mut self, chave: u32) -> bool {
-        fn remover_recursivo(no: Option<Box<No>>, chave: u32, comparacoes: &mut u64,
-            removido: &mut bool) -> Option<Box<No>> {
+        fn remover_recursivo(
+            no: Option<Box<No>>,
+            chave: u32,
+            comparacoes: &mut u64,
+            removido: &mut bool,
+        ) -> Option<Box<No>> {
             let mut no = no?;
 
             *comparacoes += 1;
@@ -174,17 +203,24 @@ impl Arvore for Aa {
                 Ordering::Equal => {
                     *removido = true;
                     if no.esq.is_none() && no.dir.is_none() {
+                        // folha: não sobra nada no lugar
                         return None;
-                    } else if no.esq.is_none() {
-                        let (sub_chave, sub_dados) = menor_no(no.esq.as_ref().unwrap());
+                    } else if let Some(dir) = no.dir.as_ref() {
+                        // tem filho direito (com ou sem esquerdo): usa o sucessor,
+                        // o menor nó da subárvore direita
+                        let (sub_chave, sub_dados) = menor_no(dir);
                         no.chave = sub_chave;
                         no.dados = sub_dados.clone();
-                        no.dir = remover_recursivo(no.dir.take(), sub_chave, comparacoes, &mut false);
+                        no.dir =
+                            remover_recursivo(no.dir.take(), sub_chave, comparacoes, &mut false);
                     } else {
-                        let (sub_chave, sub_dados) = menor_no(no.dir.as_ref().unwrap());
+                        // só tem filho esquerdo: usa o predecessor,
+                        // o maior nó da subárvore esquerda
+                        let (sub_chave, sub_dados) = maior_no(no.esq.as_ref().unwrap());
                         no.chave = sub_chave;
                         no.dados = sub_dados.clone();
-                        no.esq = remover_recursivo(no.esq.take(), sub_chave, comparacoes, &mut false);
+                        no.esq =
+                            remover_recursivo(no.esq.take(), sub_chave, comparacoes, &mut false);
                     }
                 }
             }
@@ -206,7 +242,12 @@ impl Arvore for Aa {
             Some(no)
         }
         let mut removido = false;
-        self.raiz = remover_recursivo(self.raiz.take(), chave, &mut self.comparacoes, &mut removido);
+        self.raiz = remover_recursivo(
+            self.raiz.take(),
+            chave,
+            &mut self.comparacoes,
+            &mut removido,
+        );
         if removido {
             self.tamanho -= 1;
         }
