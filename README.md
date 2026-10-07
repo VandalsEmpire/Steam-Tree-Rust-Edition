@@ -124,7 +124,7 @@ Todas as árvores implementam:
 - [x] Loader do CSV reduzido em Rust
 - [x] BST
 - [x] AA
-- [ ] AVL
+- [x] AVL
 - [ ] Métricas e gráficos
 - [ ] Slides e apresentação
 
