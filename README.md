@@ -91,15 +91,10 @@ Quem apenas clonar o repositório **não precisa** desse passo, pois o `data/gam
 
 ### 2. Rodar o programa das árvores
 
-*(a preencher quando o programa estiver pronto)*
 
 ```bash
 cargo run --release
 ```
-
-### 3. Gerar os gráficos
-
-*(a preencher: dependências e comandos)*
 
 ## Métodos implementados
 
@@ -111,11 +106,6 @@ Todas as árvores implementam:
 - `altura() -> inteiro`
 - `percorrer(ordem) -> lista de chaves` (pré-ordem, em-ordem e pós-ordem)
 - `contador_comparacoes() -> inteiro`
-
-*(a preencher: status de cada árvore)*
-
-## Métricas e análise
-
 
 ## Roadmap
 
