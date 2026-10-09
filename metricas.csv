@@ -1,0 +1,9 @@
+algoritmo,cenario,quantidade_nos,altura,comparacoes,tempo_ms
+BST,ordem do arquivo,1000, 19, 10233, 0.453
+AA,ordem do arquivo,1000, 14, 8886, 0.876
+BST,ordem do arquivo,5000, 26, 67723, 2.149
+AA,ordem do arquivo,5000, 18, 56231, 6.691
+BST,ordem do arquivo,10000, 29, 149313, 4.867
+AA,ordem do arquivo,10000, 19, 122729, 12.897
+BST,ordem do arquivo,20000, 32, 326221, 15.283
+AA,ordem do arquivo,20000, 20, 266248, 31.308
