@@ -58,6 +58,7 @@ No CSV do Kaggle, o cabeçalho tem 39 nomes, mas cada linha de dados tem 40 camp
 
 - [Rust](https://www.rust-lang.org/tools/install) (toolchain estável, com `cargo`)
 - A dependência `csv` é baixada automaticamente pelo Cargo
+- [Python 3](https://www.python.org/downloads/) com `matplotlib` (**só** para gerar os gráficos): `pip install matplotlib`
 
 ## Estrutura do repositório
 
@@ -67,11 +68,20 @@ steam/
 ├── README.md
 ├── .gitignore
 ├── data/
-│   └── games_enxuto.csv     (versionado; games.csv original fica fora do Git)
+│   ├── games_enxuto.csv     (versionado; games.csv original fica fora do Git)
+│   └── balanceamento.csv    (gerado: altura de cada árvore a cada N inserções)
+├── graficos/
+│   └── balanceamento.png    (gerado: gráfico altura × elementos)
+├── scripts/
+│   └── gerar_graficos.py    (lê o CSV de balanceamento e desenha o gráfico)
 └── src/
-    ├── main.rs              (programa das árvores: em desenvolvimento)
+    ├── main.rs              (insere o dataset nas 3 árvores e mede altura, comparações e tempo)
+    ├── jogo.rs              (struct Jogo e loader do CSV)
+    ├── arvore.rs            (trait comum às 3 árvores)
+    ├── bst.rs / avl.rs / aa.rs
     └── bin/
-        └── filtrar.rs       (filtro que gera o games_enxuto.csv)
+        ├── filtrar.rs       (filtro que gera o games_enxuto.csv)
+        └── balanceamento.rs (mede a altura a cada N inserções e grava o CSV)
 ```
 
 ## Como executar
@@ -96,6 +106,40 @@ Quem apenas clonar o repositório **não precisa** desse passo, pois o `data/gam
 cargo run --release
 ```
 
+Imprime, para cada árvore, o número de nós, a altura, as comparações e o tempo de inserção (ordem do arquivo e chaves ordenadas), além de uma busca de exemplo.
+
+### 3. Medir o balanceamento (altura × elementos)
+
+Insere os jogos um por um e anota a altura de cada árvore a cada 1.000 inserções (e no tamanho total):
+
+```bash
+cargo run --release --bin balanceamento
+```
+
+Isso grava `data/balanceamento.csv` (colunas `n,bst,aa,avl`). Os argumentos são opcionais e vêm nesta ordem: CSV de jogos, passo, modo e CSV de saída.
+
+```bash
+# passo de 500 e chaves ordenadas por AppID (pior caso da BST)
+cargo run --release --bin balanceamento -- data/games_enxuto.csv 500 ordenado data/balanceamento_ordenado.csv
+```
+
+### 4. Gerar os gráficos
+
+```bash
+pip install matplotlib
+python3 scripts/gerar_graficos.py
+```
+
+Lê `data/balanceamento.csv` e salva `graficos/balanceamento.png`. Para outro arquivo: `python3 scripts/gerar_graficos.py <entrada.csv> <saida.png>`.
+
+### 5. Testes
+
+```bash
+cargo test
+```
+
+> Use sempre `--release` para medir tempo: no modo debug os tempos ficam inflados e não representam o desempenho real. Altura e número de comparações não dependem do modo.
+
 ## Métodos implementados
 
 Todas as árvores implementam:
@@ -115,7 +159,8 @@ Todas as árvores implementam:
 - [x] BST
 - [x] AA
 - [x] AVL
-- [ ] Métricas e gráficos
+- [x] Medição de altura × elementos e script do gráfico
+- [ ] Gráficos de comparações e tempo
 - [ ] Slides e apresentação
 
 ## Referências
