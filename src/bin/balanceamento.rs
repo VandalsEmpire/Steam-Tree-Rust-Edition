@@ -26,7 +26,8 @@ use steam::avl::Avl;
 use steam::bst::Bst;
 use steam::jogo::{carregar_csv, Jogo};
 
-
+/// Insere os jogos um por um e devolve a lista de pares (n, altura).
+/// `n` é quantos jogos já foram inseridos quando a altura foi medida.
 fn medir_alturas(arvore: &mut dyn Arvore, jogos: &[&Jogo], passo: usize) -> Vec<(usize, usize)> {
     let mut pontos = Vec::new();
 
@@ -34,7 +35,7 @@ fn medir_alturas(arvore: &mut dyn Arvore, jogos: &[&Jogo], passo: usize) -> Vec<
         arvore.inserir(jogo.app_id, (*jogo).clone());
 
         let inseridos = i + 1;
-
+        // mede a cada `passo` inserções e também na última (tamanho total)
         if inseridos % passo == 0 || inseridos == jogos.len() {
             pontos.push((inseridos, arvore.altura()));
         }
@@ -73,7 +74,7 @@ fn main() {
     }
     println!("{} jogos | passo {} | modo {}", lista.len(), passo, modo);
 
-    
+    // As 3 árvores recebem EXATAMENTE os mesmos jogos, na mesma ordem.
     let mut bst = Bst::nova();
     let mut aa = Aa::nova();
     let mut avl = Avl::nova();
@@ -82,7 +83,7 @@ fn main() {
     let alturas_aa = medir_alturas(&mut aa, &lista, passo);
     let alturas_avl = medir_alturas(&mut avl, &lista, passo);
 
-    
+    // As 3 listas têm o mesmo tamanho e os mesmos `n`, então dá para andar juntas.
     let mut arquivo = match File::create(&saida) {
         Ok(f) => f,
         Err(e) => {

@@ -69,11 +69,12 @@ steam/
 ├── .gitignore
 ├── data/
 │   ├── games_enxuto.csv     (versionado; games.csv original fica fora do Git)
-│   └── balanceamento.csv    (gerado: altura de cada árvore a cada N inserções)
+│   ├── balanceamento*.csv   (gerado: altura de cada árvore a cada N inserções)
+│   └── metricas.csv         (gerado: tempo e comparações de inserir/buscar/remover)
 ├── graficos/
-│   └── balanceamento.png    (gerado: gráfico altura × elementos)
+│   └── *.png                (gerados: balanceamento e desempenho)
 ├── scripts/
-│   └── gerar_graficos.py    (lê o CSV de balanceamento e desenha o gráfico)
+│   └── gerar_graficos.py    (lê os CSVs de data/ e desenha todos os gráficos)
 └── src/
     ├── main.rs              (insere o dataset nas 3 árvores e mede altura, comparações e tempo)
     ├── jogo.rs              (struct Jogo e loader do CSV)
@@ -81,7 +82,8 @@ steam/
     ├── bst.rs / avl.rs / aa.rs
     └── bin/
         ├── filtrar.rs       (filtro que gera o games_enxuto.csv)
-        └── balanceamento.rs (mede a altura a cada N inserções e grava o CSV)
+        ├── balanceamento.rs (mede a altura a cada N inserções e grava o CSV)
+        └── metricas.rs      (mede tempo e comparações de inserir, buscar e remover)
 ```
 
 ## Como executar
@@ -123,16 +125,35 @@ Isso grava `data/balanceamento.csv` (colunas `n,bst,aa,avl`). Os argumentos são
 cargo run --release --bin balanceamento -- data/games_enxuto.csv 500 ordenado data/balanceamento_ordenado.csv
 ```
 
-### 4. Gerar os gráficos
+### 4. Medir tempo e comparações de cada operação
+
+Cronometra `inserir`, `buscar` e `remover` em cada árvore, em dois cenários (ordem do arquivo com 125.855 jogos e chaves ordenadas com 20.000 jogos, o pior caso). A busca e a remoção usam uma amostra de 10.000 chaves espalhadas pelo dataset, as mesmas para as 3 árvores:
+
+```bash
+cargo run --release --bin metricas
+```
+
+Grava `data/metricas.csv`. Argumentos opcionais, nesta ordem: CSV de jogos, CSV de saída e tamanho da amostra.
+
+### 5. Gerar os gráficos
 
 ```bash
 pip install matplotlib
 python3 scripts/gerar_graficos.py
 ```
 
-Lê `data/balanceamento.csv` e salva `graficos/balanceamento.png`. Para outro arquivo: `python3 scripts/gerar_graficos.py <entrada.csv> <saida.png>`.
+Lê os CSVs de `data/` e salva em `graficos/`:
 
-### 5. Testes
+| Arquivo | O que mostra |
+|---|---|
+| `balanceamento.png` | altura × elementos inseridos (ordem do arquivo) |
+| `balanceamento_ordenado.png` | altura × elementos inseridos (chaves ordenadas; precisa do CSV do passo 3 com o modo `ordenado`) |
+| `desempenho_<cenario>_tempo.png` | tempo médio por operação |
+| `desempenho_<cenario>_comparacoes.png` | comparações médias por operação |
+
+Onde `<cenario>` é `arquivo` ou `ordenado`. O script ignora o gráfico cujo CSV não existir e avisa qual comando rodar.
+
+### 6. Testes
 
 ```bash
 cargo test
@@ -160,7 +181,7 @@ Todas as árvores implementam:
 - [x] AA
 - [x] AVL
 - [x] Medição de altura × elementos e script do gráfico
-- [ ] Gráficos de comparações e tempo
+- [x] Métricas por operação (inserir, buscar, remover) e gráficos de desempenho
 - [ ] Slides e apresentação
 
 ## Referências
